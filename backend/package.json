@@ -8,6 +8,7 @@
     "start": "node dist/app.js",
     "dev": "tsnd --respawn --transpile-only src/app.ts",
     "seed": "ts-node src/seed.ts",
+    "clear-db": "ts-node src/clearDb.ts",
     "backup": "ts-node src/utils/backup.ts",
     "migration": "ts-node src/migrations/addReminderFields.ts"
   },
