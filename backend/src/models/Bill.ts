@@ -162,8 +162,6 @@ billSchema.pre('validate', function(next) {
 
   next();
 });
-
-billSchema.index({ billNumber: 1 });
 billSchema.index({ customerId: 1 });
 billSchema.index({ billDate: -1 });
 

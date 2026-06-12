@@ -32,7 +32,6 @@ const truckSchema = new Schema({
   timestamps: true,
 });
 
-truckSchema.index({ truckNumber: 1 });
 
 export const Truck = model('Truck', truckSchema);
 export default Truck;
