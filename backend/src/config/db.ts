@@ -3,7 +3,10 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://pitambara_db_user:0kGvBaxijWWmYBCs@cluster0.gwpekfo.mongodb.net/pitambara_dms?appName=Cluster0';
+let MONGODB_URI = process.env.MONGODB_URI;
+if (!MONGODB_URI || MONGODB_URI === 'undefined' || MONGODB_URI === 'null' || MONGODB_URI.trim() === '' || !MONGODB_URI.startsWith('mongodb')) {
+  MONGODB_URI = 'mongodb+srv://pitambara_db_user:0kGvBaxijWWmYBCs@cluster0.gwpekfo.mongodb.net/pitambara_dms?appName=Cluster0';
+}
 
 export const connectDB = async (): Promise<void> => {
   const mongooseOptions = {

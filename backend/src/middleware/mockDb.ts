@@ -133,7 +133,10 @@ export const mockDbMiddleware = async (req: Request, res: Response, next: NextFu
   // If database is disconnected (0), trigger a connection attempt
   if (mongoose.connection.readyState === 0) {
     try {
-      const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://pitambara_db_user:0kGvBaxijWWmYBCs@cluster0.gwpekfo.mongodb.net/pitambara_dms?appName=Cluster0';
+      let MONGODB_URI = process.env.MONGODB_URI;
+      if (!MONGODB_URI || MONGODB_URI === 'undefined' || MONGODB_URI === 'null' || MONGODB_URI.trim() === '' || !MONGODB_URI.startsWith('mongodb')) {
+        MONGODB_URI = 'mongodb+srv://pitambara_db_user:0kGvBaxijWWmYBCs@cluster0.gwpekfo.mongodb.net/pitambara_dms?appName=Cluster0';
+      }
       const mongooseOptions = {
         autoIndex: true,
         serverSelectionTimeoutMS: 10000,
