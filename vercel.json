@@ -1,5 +1,9 @@
 {
   "version": 2,
+  "env": {
+    "MONGODB_URI": "mongodb+srv://pitambara_db_user:0kGvBaxijWWmYBCs@cluster0.gwpekfo.mongodb.net/?appName=Cluster0",
+    "JWT_SECRET": "pitambara_dairy_secret_key_987"
+  },
   "rewrites": [
     {
       "source": "/api/(.*)",
