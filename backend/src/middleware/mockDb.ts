@@ -130,6 +130,23 @@ const generateToken = (id: string): string => {
 };
 
 export const mockDbMiddleware = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+  // If database is disconnected (0), trigger a connection attempt
+  if (mongoose.connection.readyState === 0) {
+    try {
+      const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://pitambara_db_user:0kGvBaxijWWmYBCs@cluster0.gwpekfo.mongodb.net/pitambara_dms?appName=Cluster0';
+      const mongooseOptions = {
+        autoIndex: true,
+        serverSelectionTimeoutMS: 10000,
+        socketTimeoutMS: 45000,
+        maxPoolSize: 15,
+        minPoolSize: 2,
+      };
+      await mongoose.connect(MONGODB_URI, mongooseOptions);
+    } catch (err) {
+      console.error("Database connection failed inside middleware:", err);
+    }
+  }
+
   // If database is currently connecting, wait for it to finish
   if (mongoose.connection.readyState === 2) {
     try {
