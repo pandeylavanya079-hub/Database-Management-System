@@ -153,9 +153,33 @@ export const mockDbMiddleware = async (req: Request, res: Response, next: NextFu
   // If database is currently connecting, wait for it to finish
   if (mongoose.connection.readyState === 2) {
     try {
-      await mongoose.connection;
+      await new Promise<void>((resolve, reject) => {
+        if (mongoose.connection.readyState === 1) return resolve();
+        if (mongoose.connection.readyState === 0 || mongoose.connection.readyState === 3) return reject(new Error('Connection closed'));
+        
+        const onOpen = () => {
+          cleanup();
+          resolve();
+        };
+        const onError = (err: any) => {
+          cleanup();
+          reject(err);
+        };
+        const cleanup = () => {
+          mongoose.connection.off('open', onOpen);
+          mongoose.connection.off('error', onError);
+        };
+        mongoose.connection.once('open', onOpen);
+        mongoose.connection.once('error', onError);
+        
+        // Safety timeout to avoid hanging the function forever
+        setTimeout(() => {
+          cleanup();
+          reject(new Error('Timeout waiting for database connection'));
+        }, 8000);
+      });
     } catch (err) {
-      // Ignore error; it is handled by connection readyState check below
+      console.error("Error waiting for Mongoose connection:", err);
     }
   }
 

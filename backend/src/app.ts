@@ -49,9 +49,17 @@ app.use('/api/reports', reportRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/bills', billRoutes);
 
+import mongoose from 'mongoose';
+import { MONGODB_URI, lastConnectionError } from './config/db';
+
 // Health Check Route
 app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'OK', message: 'Pitambara DMS API is operational' });
+  res.status(200).json({
+    status: mongoose.connection.readyState === 1 ? 'CONNECTED' : 'OFFLINE',
+    readyState: mongoose.connection.readyState,
+    mongodbUri: MONGODB_URI ? MONGODB_URI.replace(/:([^@]+)@/, ':****@') : null, // Mask password
+    lastError: lastConnectionError
+  });
 });
 
 // 404 Route handler

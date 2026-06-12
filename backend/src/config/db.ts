@@ -3,10 +3,13 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-let MONGODB_URI = process.env.MONGODB_URI;
-if (!MONGODB_URI || MONGODB_URI === 'undefined' || MONGODB_URI === 'null' || MONGODB_URI.trim() === '' || !MONGODB_URI.startsWith('mongodb')) {
-  MONGODB_URI = 'mongodb+srv://pitambara_db_user:0kGvBaxijWWmYBCs@cluster0.gwpekfo.mongodb.net/pitambara_dms?appName=Cluster0';
+let uri = process.env.MONGODB_URI;
+if (!uri || uri === 'undefined' || uri === 'null' || uri.trim() === '' || !uri.startsWith('mongodb')) {
+  uri = 'mongodb+srv://pitambara_db_user:0kGvBaxijWWmYBCs@cluster0.gwpekfo.mongodb.net/pitambara_dms?appName=Cluster0';
 }
+export const MONGODB_URI: string = uri;
+
+export let lastConnectionError: string | null = null;
 
 export const connectDB = async (): Promise<void> => {
   const mongooseOptions = {
@@ -20,6 +23,7 @@ export const connectDB = async (): Promise<void> => {
   try {
     const conn = await mongoose.connect(MONGODB_URI, mongooseOptions);
     console.log(`MongoDB Connected: ${conn.connection.host}`);
+    lastConnectionError = null;
 
     // Listen for unexpected connection drops
     mongoose.connection.on('disconnected', () => {
@@ -28,8 +32,10 @@ export const connectDB = async (): Promise<void> => {
     
     mongoose.connection.on('reconnected', () => {
       console.log('MongoDB connection successfully restored!');
+      lastConnectionError = null;
     });
   } catch (error) {
+    lastConnectionError = error instanceof Error ? error.message : String(error);
     console.error("MongoDB Connection Error:", error);
     console.warn(`WARNING: Could not connect to MongoDB at ${MONGODB_URI}. Operations requiring database access will fail, but the API server is kept running in-memory fallback mode.`);
   }
