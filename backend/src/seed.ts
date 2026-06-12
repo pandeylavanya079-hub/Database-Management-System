@@ -41,15 +41,10 @@ const seedDatabase = async () => {
     await DailyMilkDistribution.deleteMany({});
 
     console.log('Creating users...');
-    const salt = await bcrypt.genSalt(10);
-    const adminPassword = await bcrypt.hash('admin123', salt);
-    const managerPassword = await bcrypt.hash('manager123', salt);
-    const staffPassword = await bcrypt.hash('staff123', salt);
-
     const users = await User.create([
-      { name: 'Vandana Mishra', email: 'admin@pitambara.com', password: adminPassword, role: 'Admin', isActive: true },
-      { name: 'Manager User', email: 'manager@pitambara.com', password: managerPassword, role: 'Manager', isActive: true },
-      { name: 'Staff User', email: 'staff@pitambara.com', password: staffPassword, role: 'Staff', isActive: true }
+      { name: 'Vandana Mishra', email: 'admin@pitambara.com', password: 'admin123', role: 'Admin', isActive: true },
+      { name: 'Manager User', email: 'manager@pitambara.com', password: 'manager123', role: 'Manager', isActive: true },
+      { name: 'Staff User', email: 'staff@pitambara.com', password: 'staff123', role: 'Staff', isActive: true }
     ]);
     console.log('Users created successfully!');
 
