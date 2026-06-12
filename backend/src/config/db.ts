@@ -27,6 +27,7 @@ export const connectDB = async (): Promise<void> => {
       console.log('MongoDB connection successfully restored!');
     });
   } catch (error) {
+    console.error("MongoDB Connection Error:", error);
     console.warn(`WARNING: Could not connect to MongoDB at ${MONGODB_URI}. Operations requiring database access will fail, but the API server is kept running in-memory fallback mode.`);
   }
 };
