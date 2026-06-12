@@ -138,6 +138,10 @@ export const Purchases: React.FC = () => {
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formData.supplierId) {
+      toast.error('Please create and select a Supplier first!');
+      return;
+    }
     setSubmitting(true);
     try {
       const payload = {

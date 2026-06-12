@@ -33,10 +33,17 @@ export const getPurchases = async (req: AuthenticatedRequest, res: Response): Pr
   }
 };
 
+import mongoose from 'mongoose';
+
 export const createPurchase = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   const { purchaseDate, supplierId, milkType, quantity, fatPercentage, snfPercentage, ratePerLiter, notes } = req.body;
 
   try {
+    if (!supplierId || !mongoose.Types.ObjectId.isValid(supplierId)) {
+      res.status(400).json({ message: 'Invalid or missing Supplier selection. Please select a valid supplier.' });
+      return;
+    }
+
     const supplier = await Supplier.findById(supplierId);
     if (!supplier) {
       res.status(404).json({ message: 'Supplier not found' });

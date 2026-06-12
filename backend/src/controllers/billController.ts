@@ -6,6 +6,8 @@ import { AuditLog } from '../models/AuditLog';
 import { AuthenticatedRequest } from '../middleware/auth';
 import { sendWhatsAppNotification, sendSMSNotification } from '../utils/notifications';
 
+import mongoose from 'mongoose';
+
 // Create a new bill
 export const createBill = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   const {
@@ -22,6 +24,11 @@ export const createBill = async (req: AuthenticatedRequest, res: Response): Prom
   } = req.body;
 
   try {
+    if (!customerId || !mongoose.Types.ObjectId.isValid(customerId)) {
+      res.status(400).json({ message: 'Invalid or missing Customer selection. Please select a valid customer.' });
+      return;
+    }
+
     const customer = await Customer.findById(customerId);
     if (!customer) {
       res.status(404).json({ message: 'Customer not found' });

@@ -117,6 +117,10 @@ export const Sales: React.FC = () => {
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formData.customerId) {
+      toast.error('Please create and select a Customer first!');
+      return;
+    }
     setSubmitting(true);
     try {
       const payload = {

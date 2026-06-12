@@ -37,10 +37,17 @@ export const getSales = async (req: AuthenticatedRequest, res: Response): Promis
   }
 };
 
+import mongoose from 'mongoose';
+
 export const createSale = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   const { saleDate, customerId, quantity, fatPercentage, snfPercentage, ratePerLiter } = req.body;
 
   try {
+    if (!customerId || !mongoose.Types.ObjectId.isValid(customerId)) {
+      res.status(400).json({ message: 'Invalid or missing Customer selection. Please select a valid customer.' });
+      return;
+    }
+
     const customer = await Customer.findById(customerId);
     if (!customer) {
       res.status(404).json({ message: 'Customer not found' });
