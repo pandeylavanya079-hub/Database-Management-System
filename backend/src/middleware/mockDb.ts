@@ -188,6 +188,15 @@ export const mockDbMiddleware = async (req: Request, res: Response, next: NextFu
     return next();
   }
 
+  // Under Vercel serverless or production environments, we should NEVER silently fall back
+  // to the in-memory mock DB since containers scale horizontally and are stateless.
+  if (process.env.VERCEL || process.env.NODE_ENV === 'production') {
+    return res.status(503).json({
+      message: 'Database connection is currently unavailable. Please refresh or retry in a few seconds.',
+      readyState: mongoose.connection.readyState
+    });
+  }
+
   // Initialize data stores
   initMockData();
 
