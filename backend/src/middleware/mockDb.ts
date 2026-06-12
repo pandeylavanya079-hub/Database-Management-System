@@ -129,7 +129,16 @@ const generateToken = (id: string): string => {
   });
 };
 
-export const mockDbMiddleware = (req: Request, res: Response, next: NextFunction): any => {
+export const mockDbMiddleware = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+  // If database is currently connecting, wait for it to finish
+  if (mongoose.connection.readyState === 2) {
+    try {
+      await mongoose.connection;
+    } catch (err) {
+      // Ignore error; it is handled by connection readyState check below
+    }
+  }
+
   // If MongoDB is connected, skip mock database
   if (mongoose.connection.readyState === 1) {
     return next();
