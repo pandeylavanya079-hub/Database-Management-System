@@ -391,7 +391,7 @@ export const Purchases: React.FC = () => {
                           <Edit3 className="w-4 h-4" />
                         </button>
                         <button
-                          disabled={!canModify}
+                          disabled={user?.role !== 'Admin'}
                           onClick={() => handleDelete(p._id)}
                           className="p-1.5 text-slate-400 hover:text-rose-500 disabled:opacity-30 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                           title="Delete Entry"
